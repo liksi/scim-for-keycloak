@@ -82,8 +82,9 @@ public class UserHandler extends ResourceHandler<User>
                           List<SchemaAttribute> attributes,
                           List<SchemaAttribute> excludedAttributes)
   {
+    final String internalId = SyncUtils.getInternalId(id);
     KeycloakSession keycloakSession = ((ScimAuthorization)authorization).getKeycloakSession();
-    UserModel userModel = keycloakSession.users().getUserById(id, keycloakSession.getContext().getRealm());
+    UserModel userModel = keycloakSession.users().getUserById(internalId, keycloakSession.getContext().getRealm());
     if (userModel == null)
     {
       return null; // causes a resource not found exception you may also throw it manually
@@ -119,10 +120,9 @@ public class UserHandler extends ResourceHandler<User>
   @Override
   public User updateResource(User userToUpdate, Authorization authorization)
   {
+    final String internalId = SyncUtils.getInternalId(userToUpdate.getId().get());
     KeycloakSession keycloakSession = ((ScimAuthorization)authorization).getKeycloakSession();
-    UserModel userModel = keycloakSession.users()
-                                         .getUserById(userToUpdate.getId().get(),
-                                                      keycloakSession.getContext().getRealm());
+    UserModel userModel = keycloakSession.users().getUserById(internalId, keycloakSession.getContext().getRealm());
     if (userModel == null)
     {
       return null; // causes a resource not found exception you may also throw it manually
@@ -143,11 +143,12 @@ public class UserHandler extends ResourceHandler<User>
   @Override
   public void deleteResource(String id, Authorization authorization)
   {
+    final String internalId = SyncUtils.getInternalId(id);
     KeycloakSession keycloakSession = ((ScimAuthorization)authorization).getKeycloakSession();
-    UserModel userModel = keycloakSession.users().getUserById(id, keycloakSession.getContext().getRealm());
+    UserModel userModel = keycloakSession.users().getUserById(internalId, keycloakSession.getContext().getRealm());
     if (userModel == null)
     {
-      throw new ResourceNotFoundException("resource with id '" + id + "' does not exist");
+      throw new ResourceNotFoundException("resource with id '" + internalId + "' does not exist");
     }
     keycloakSession.users().removeUser(keycloakSession.getContext().getRealm(), userModel);
     log.info("deleted user with username: {}", userModel.getUsername());
@@ -275,7 +276,7 @@ public class UserHandler extends ResourceHandler<User>
   private User modelToUser(UserModel userModel)
   {
     User user = User.builder()
-                    .id(userModel.getId())
+                    .id(SyncUtils.getPublicId(userModel.getId(), false))
                     .externalId(userModel.getFirstAttribute(AttributeNames.RFC7643.EXTERNAL_ID))
                     .userName(userModel.getUsername())
                     .name(Name.builder()

@@ -56,10 +56,10 @@ public class GroupHandlerTest extends KeycloakScimManagementTest
 
 
     {
-      Member memberMario = Member.builder().value(superMario.getId()).type("User").build();
-      Member memberBowser = Member.builder().value(bowser.getId()).type("User").build();
-      Member memberRetroStudios = Member.builder().value(retroStudios.getId()).type("Group").build();
-      Member memberMarioClub = Member.builder().value(marioClub.getId()).type("Group").build();
+      Member memberMario = Member.builder().value("u-" + superMario.getId()).type("User").build();
+      Member memberBowser = Member.builder().value("u-" + bowser.getId()).type("User").build();
+      Member memberRetroStudios = Member.builder().value("g-" + retroStudios.getId()).type("Group").build();
+      Member memberMarioClub = Member.builder().value("g-" + marioClub.getId()).type("Group").build();
 
       PatchOpRequest patchOpRequest = new PatchOpRequest();
       List<PatchRequestOperation> operations = new ArrayList<>();
@@ -86,7 +86,7 @@ public class GroupHandlerTest extends KeycloakScimManagementTest
       patchOpRequest.setOperations(operations);
 
       HttpServletRequest request = RequestBuilder.builder(getScimEndpoint())
-                                                 .endpoint(EndpointPaths.GROUPS + "/" + nintendo.getId())
+                                                 .endpoint(EndpointPaths.GROUPS + "/g-" + nintendo.getId())
                                                  .method(HttpMethod.PATCH)
                                                  .requestBody(patchOpRequest.toString())
                                                  .build();
@@ -112,15 +112,15 @@ public class GroupHandlerTest extends KeycloakScimManagementTest
 
       operations.add(PatchRequestOperation.builder()
                                           .op(PatchOp.REMOVE)
-                                          .path("members[value eq \"" + bowser.getId() + "\"]")
+                                          .path("members[value eq \"u-" + bowser.getId() + "\"]")
                                           .build());
       operations.add(PatchRequestOperation.builder()
                                           .op(PatchOp.REMOVE)
-                                          .path("members[value eq \"" + marioClub.getId() + "\"]")
+                                          .path("members[value eq \"g-" + marioClub.getId() + "\"]")
                                           .build());
       patchOpRequest.setOperations(operations);
       HttpServletRequest request = RequestBuilder.builder(getScimEndpoint())
-                                                 .endpoint(EndpointPaths.GROUPS + "/" + nintendo.getId())
+                                                 .endpoint(EndpointPaths.GROUPS + "/g-" + nintendo.getId())
                                                  .method(HttpMethod.PATCH)
                                                  .requestBody(patchOpRequest.toString())
                                                  .build();
@@ -151,10 +151,15 @@ public class GroupHandlerTest extends KeycloakScimManagementTest
   @ValueSource(strings = {"User", "Group"})
   public void testCreateGroupWithNonExistingMember(String type)
   {
+    String prefix = "u-";
+    if("Group".equals(type))
+    {
+      prefix = "g-";
+    }
     final String notExistingId = UUID.randomUUID().toString();
     Group nintendo = Group.builder()
                           .displayName("nintendo")
-                          .members(Arrays.asList(Member.builder().value(notExistingId).type(type).build()))
+                          .members(Arrays.asList(Member.builder().value(prefix + notExistingId).type(type).build()))
                           .build();
 
     HttpServletRequest request = RequestBuilder.builder(getScimEndpoint())

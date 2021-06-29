@@ -65,7 +65,7 @@ public class UserHandlerTest extends KeycloakScimManagementTest
 
     HttpServletRequest request = RequestBuilder.builder(getScimEndpoint())
                                                .method(HttpMethod.PATCH)
-                                               .endpoint(EndpointPaths.USERS + "/" + superMario.getId())
+                                               .endpoint(EndpointPaths.USERS + "/u-" + superMario.getId())
                                                .requestBody(patchOpRequest.toString())
                                                .build();
     Response response = getScimEndpoint().handleScimRequest(request);

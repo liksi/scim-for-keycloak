@@ -180,8 +180,7 @@ public class GroupHandler extends ResourceHandler<Group>
       GroupModel newMember = keycloakSession.groups().getGroupById(realmModel, id);
       if (newMember == null)
       {
-        // This can be a user, do nothing
-        // throw new ResourceNotFoundException(String.format("Group with id '%s' does not exist", id));
+        throw new ResourceNotFoundException(String.format("Group with id '%s' does not exist", id));
       }
       groupModel.addChild(newMember);
     });
@@ -217,13 +216,9 @@ public class GroupHandler extends ResourceHandler<Group>
       UserModel newMember = keycloakSession.users().getUserById(id, realmModel);
       if (newMember == null)
       {
-        // This can be a group, do nothing
-        // throw new ResourceNotFoundException(String.format("User with id '%s' does not exist", id));
+        throw new ResourceNotFoundException(String.format("User with id '%s' does not exist", id));
       }
-      else
-      {
-        newMember.joinGroup(groupModel);
-      }
+      newMember.joinGroup(groupModel);
     });
   }
 
@@ -256,12 +251,17 @@ public class GroupHandler extends ResourceHandler<Group>
 
     keycloakSession.users()
                    .getGroupMembersStream(keycloakSession.getContext().getRealm(), groupModel)
-                .map()
-                .map(groupMember -> Member.builder().value(groupMember.getId()).type("User").build())
+                   .map(groupMember -> Member.builder()
+                                             .value(SyncUtils.getPublicId(groupMember.getId(), false))
+                                             .type("User")
+                                             .build())
                    .forEach(members::add);
 
     groupModel.getSubGroupsStream()
-              .map(subgroup -> Member.builder().value(subgroup.getId()).type("Group").build())
+              .map(subgroup -> Member.builder()
+                                     .value(SyncUtils.getPublicId(subgroup.getId(), true))
+                                     .type("Group")
+                                     .build())
               .forEach(members::add);
 
     return members;

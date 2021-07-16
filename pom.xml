@@ -40,7 +40,7 @@
         <formatter-path>${project.parent.basedir}</formatter-path>
 
         <version.keycloak>13.0.0</version.keycloak>
-        <version.scim.sdk>1.9.2</version.scim.sdk>
+        <version.scim.sdk>1.9.3-SNAPSHOT</version.scim.sdk>
 
         <version.sun.javax.activation>1.2.0</version.sun.javax.activation>
         <version.javax.activation>1.1.1</version.javax.activation>
@@ -180,52 +180,52 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-                <version>${version.maven.formatter.plugin}</version>
-                <configuration>
-                    <configFile>${formatter-path}/formatter.xml</configFile>
-                    <lineEnding>LF</lineEnding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>validate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>net.revelc.code.formatter</groupId>-->
+<!--                <artifactId>formatter-maven-plugin</artifactId>-->
+<!--                <version>${version.maven.formatter.plugin}</version>-->
+<!--                <configuration>-->
+<!--                    <configFile>${formatter-path}/formatter.xml</configFile>-->
+<!--                    <lineEnding>LF</lineEnding>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>validate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${version.maven.enforcer.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <rules>
-                        <requireMavenVersion>
-                            <version>[3.3,)</version>
-                        </requireMavenVersion>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--                <version>${version.maven.enforcer.plugin}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>enforce</id>-->
+<!--                        <goals>-->
+<!--                            <goal>enforce</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <rules>-->
+<!--                        <requireMavenVersion>-->
+<!--                            <version>[3.3,)</version>-->
+<!--                        </requireMavenVersion>-->
 
-                        <requireReleaseDeps>
-                            <message>No Snapshots Allowed on release!</message>
-                            <onlyWhenRelease>true</onlyWhenRelease>
-                        </requireReleaseDeps>
+<!--                        <requireReleaseDeps>-->
+<!--                            <message>No Snapshots Allowed on release!</message>-->
+<!--                            <onlyWhenRelease>true</onlyWhenRelease>-->
+<!--                        </requireReleaseDeps>-->
 
-                        <banDuplicatePomDependencyVersions/>
+<!--                        <banDuplicatePomDependencyVersions/>-->
 
-                        <dependencyConvergence/>
-                    </rules>
-                </configuration>
-            </plugin>
+<!--                        <dependencyConvergence/>-->
+<!--                    </rules>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

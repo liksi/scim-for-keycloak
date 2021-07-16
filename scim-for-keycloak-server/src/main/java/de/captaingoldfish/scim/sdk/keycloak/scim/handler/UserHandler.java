@@ -42,6 +42,7 @@ import de.captaingoldfish.scim.sdk.server.endpoints.authorize.Authorization;
 import de.captaingoldfish.scim.sdk.server.filter.FilterNode;
 import de.captaingoldfish.scim.sdk.server.response.PartialListResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Attr;
 
 
 /**
@@ -205,6 +206,7 @@ public class UserHandler extends ResourceHandler<User>
       name.getFormatted()
           .ifPresent(formatted -> userModel.setSingleAttribute(AttributeNames.RFC7643.FORMATTED, formatted));
     });
+    userModel.setSingleAttribute(AttributeNames.Custom.SALA_CODE, user.getSalaCode().orElse(null));
     userModel.setSingleAttribute(AttributeNames.RFC7643.NICK_NAME, user.getNickName().orElse(null));
     userModel.setSingleAttribute(AttributeNames.RFC7643.TITLE, user.getTitle().orElse(null));
     userModel.setSingleAttribute(AttributeNames.RFC7643.DISPLAY_NAME, user.getDisplayName().orElse(null));
@@ -277,6 +279,7 @@ public class UserHandler extends ResourceHandler<User>
   {
     User user = User.builder()
                     .id(SyncUtils.getPublicId(userModel.getId(), false))
+                    .salaCode(userModel.getFirstAttribute(AttributeNames.Custom.SALA_CODE))
                     .externalId(userModel.getFirstAttribute(AttributeNames.RFC7643.EXTERNAL_ID))
                     .userName(userModel.getUsername())
                     .name(Name.builder()
